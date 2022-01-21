@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html;charset=UTF-8" encoding="UTF-8">
+	<h:head>
+	</h:head>
+	<h:body>
+		<script type="text/javascript"
+			src="https://maps.google.com/maps/api/js?sensor=false"></script>
+		<div class="card">
+			<h:form id="form">
+				<p:dataTable id="users" var="user" lazy="true"
+					value="#{helloWorldBean.allUsers}" rowKey="#{user.id}"
+					selection="#{helloWorldBean.selectedUser}" selectionMode="single">
+					<p:ajax event="rowSelect" listener="#{helloWorldBean.fillPhones}" />
+					<f:facet name="header">
+                RightClick to View SmartPhones
+            </f:facet>
+
+					<p:column headerText="id">
+						<h:outputText value="#{user.id}" />
+					</p:column>
+					<p:column headerText="Email">
+						<h:outputText value="#{user.email}" />
+					</p:column>
+					<p:column headerText="Nom">
+						<h:outputText value="#{user.nom}" />
+					</p:column>
+					<p:column headerText="Prenom">
+						<h:outputText value="#{user.prenom}" />
+					</p:column>
+					<p:column headerText="Telephone">
+						<h:outputText value="#{user.telephone}" />
+					</p:column>
+					<p:column headerText="Date naissance">
+						<h:outputText value="#{user.dateNaissance}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:contextMenu for="users">
+					<p:menuitem value="View" update="userDetail" icon="pi pi-search"
+						oncomplete="PF('userDialog').show()" />
+				</p:contextMenu>
+
+				<p:dialog header="Smart Phones" widgetVar="userDialog" modal="true"
+					showEffect="fade" hideEffect="fade" resizable="false">
+					<p:outputPanel id="userDetail" style="text-align:center;">
+						<p:dataTable lazy="true" var="phone"
+							value="#{helloWorldBean.selectedUser.smartPhones}">
+							<p:column headerText="Id">
+								<h:outputText value="#{phone.id}" />
+							</p:column>
+							<p:column headerText="Imei">
+								<h:outputText value="#{phone.ref}" />
+							</p:column>
+							<p:column headerText="Name">
+								<h:outputText value="#{phone.name}" />
+							</p:column>
+							<p:column headerText="Marque">
+								<h:outputText value="#{phone.marque}" />
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</p:dialog>
+			</h:form>
+			<p:barChart model="#{helloWorldBean.barModel}"
+				style="width: 100%; height: 500px;" />
+			<h:form>
+				<p:panel header="Select a Mounth" style="margin-bottom:10px;">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel for="mounth" value="Mounth: " />
+						<p:selectOneMenu id="mounth" value="#{helloWorldBean.mounth}"
+							style="width:150px">
+							<p:ajax listener="#{helloWorldBean.onMounthChange}"
+								update="mybar" />
+							<f:selectItem itemLabel="Select Mounth" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{helloWorldBean.mounths}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:divider />
+					<p:commandButton value="Submit" action="#{helloWorldBean.onSubmit}"
+						icon="pi pi-check" />
+				</p:panel>
+			</h:form>
+			<p:barChart id="mybar" model="#{helloWorldBean.barModel1}"
+				style="width: 100%; height: 500px;" />
+			<h:form>
+				<p:panel header="Select a User" style="margin-bottom:10px;">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel for="userEmail" value="User: " />
+						<p:selectOneMenu id="userEmail" value="#{helloWorldBean.userEmail}"
+							style="width:150px">
+							<p:ajax listener="#{helloWorldBean.onUserChange}"
+								update="mymap" />
+							<f:selectItem itemLabel="Select User" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{helloWorldBean.usersEmail}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:divider />
+					<p:commandButton value="Submit" action="#{helloWorldBean.onSubmit1}"
+						icon="pi pi-check" />
+				</p:panel>
+			</h:form>
+			<p:gmap id="mymap" center="36.890257,30.707417" zoom="3" type="HYBRID"
+				style="width:100%;height:400px"
+				model="#{helloWorldBean.simpleModel}" />
+		</div>
+	</h:body>
+</f:view>
+
+</html>
